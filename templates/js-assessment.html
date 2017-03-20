@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Skills JavaScript</title>
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
   <link rel="stylesheet" href="static/styles.css">
+  <script
+  src="https://code.jquery.com/jquery-3.2.0.min.js"
+  integrity="sha256-JAW99MJVpJBGcbzEuXk4Az05s/XyDdBomFqNlM3ic+I="
+  crossorigin="anonymous"></script> <!-- I'm putting this here instead of at the end of the document because it needs to before allllllll of the scripts that use it. If the scripts weren't scattered throught the doc, I would put it before the other script tags at the end of the body -->
 </head>
 <body class="container">
 
@@ -75,7 +79,16 @@
 
 <script>
   "use strict";
-  // code here for above problem
+  
+  var submissiveForm = document.getElementById('prevent-form-submission-form');
+
+  function makeAlert(evt) {
+    evt.preventDefault();
+    alert("Hey there Grading Fairy! You look amazing today!");
+  }
+
+  submissiveForm.addEventListener('submit', makeAlert);
+
 </script>
 
 <div class="hint">
@@ -100,20 +113,27 @@
 
 //  Here's a stub of a function you can use!
 
-//  function reverseString() {
-//    var msg = "Porcupines are cute";
-//
-//    // do some stuff here to reverse that string into a new variable
-//    var newMsg = "This should be the reversed string";
-//
-//    alert(newMsg);
-//  }
+ function reverseString() {
+   var msg = "Porcupines are cute";
+
+   var splitMsg = msg.split('');
+
+   var reversed = [];
+
+   for (var i = 0; i < msg.length; i++) {
+     reversed.push(splitMsg.pop());
+   }
+
+   var newMsg = reversed.join('');
+
+   alert(newMsg);
+ }
 
 // Here's a stub of event stuff you could use
 //
 
-//  var button = document.getElementById('reverse-string-button');
-//  button.addEventListener('click', reverseString);
+ var button = document.getElementById('reverse-string-button');
+ button.addEventListener('click', reverseString);
 </script>
 
 
@@ -145,7 +165,12 @@
 
 <script>
   "use strict";
-  // put your code here
+  
+  $('#kittenz-rule').attr('src', 'static/puppy.jpg')
+
+
+
+
 </script>
 
 <div class="hint">
@@ -167,16 +192,64 @@
 <fieldset>
   <input type="button" id="play-guessing-game" value="Play!">
   <form action="do-not-go-here" id="guessing-game-form">
-    <input id="number-guessed" name="number-guessed" type="number" placeholder="Guess" disabled>
+    <p id="game-instructions" hidden></p>
+    <p id="guessedWrong" hidden></p>
+    <p id="guessedRight" hidden></p>
+    <p id="playAgainMsg" hidden></p>
+    <input id="number-guessed" name="number-guessed" type="number" min="1" max="100" placeholder="Guess">
     <!-- hey! go read MDN about the "number" input type. Cool, huh? -->
-    <input type="submit" id="try-this-number" value="Guess" disabled>
+    <input type="submit" id="try-this-number" value="Guess">
     <div id="number-guessing-msg"></div>
   </form>
 </fieldset>
 
 <script>
   "use strict";
-  // put your code here
+
+  function startGame (evt) {
+    evt.preventDefault();
+    $('#playAgainMsg').slideUp();
+    $('#guessedRight').slideUp();
+    $('#game-instructions').html('You are now playing the game. Please pick a number from 1 to 100').slideDown();
+
+    var numberToBeGuessed = Math.floor(Math.random() * 100) + 1;
+    console.log(numberToBeGuessed)
+
+    function handleGuess (evt) {
+
+      evt.preventDefault();
+
+      var guess = parseInt($('#number-guessed').val())
+
+      if (guess === numberToBeGuessed) {
+        $('#guessedRight').html('You have guessed Right! the number is ' + numberToBeGuessed).slideDown();
+        $('#playAgainMsg').html('Hit the play button to play again').slideDown();
+        return;
+      } else {
+        $('#guessedWrong').html('You have guessed wrong. Please guess again.').slideDown();
+        setTimeout(function(){ $('#guessedWrong').slideUp() }, 2000);
+      }
+    }
+
+
+    $('#guessing-game-form').on('submit', handleGuess);
+  }
+  
+  function notPlaying(evt) {
+    evt.preventDefault();
+    alert("You are not currently playing the game. Please click the 'Play!' button to begin playing")
+  }
+
+
+
+  $('#play-guessing-game').on('click', startGame);
+
+  $('#guessing-game-form').on('submit', notPlaying);
+
+
+
+
+
 </script>
 
 
@@ -242,7 +315,16 @@
     $("#t-rex-img").append(tRexPhoto);
   }
 
-  // put your code here
+  
+  function submitAttack (evt) {
+    var formInput = {
+      "attack-target": $('#t-rex-target').val()
+    }
+    evt.preventDefault();
+    $.post("/t-rex-attack.json", formInput, showTRexResults);
+  }
+
+  $('#t-rex-form').on('submit', submitAttack)
 
 </script>
 
